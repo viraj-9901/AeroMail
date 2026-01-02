@@ -5,11 +5,11 @@ import bcrypt from "bcrypt";
 import type { StringValue } from 'ms';
 
 interface IAuthBase {
-    referenceNumber: string;
     email: string;
     emailVerified: boolean;
     password: string;
     status: string;
+    role: string;
     lastLoginAt?: Date;
     loginAttempts: number;
     lockUntil?: Date;
@@ -26,11 +26,6 @@ export interface IAuth extends IAuthBase, Document {
 type IAuthModel = Model<IAuth>;
 
 const authSchema = new Schema({
-    referenceNumber: {
-        type: String,
-        unique: true,
-        default: ""
-    },
     email: {
         type: String,
         required: true,
@@ -50,6 +45,11 @@ const authSchema = new Schema({
         type: String,
         enum: ["active", "inactive"],
         default: "active"
+    },
+    role: {
+        type: String,
+        enum: ["user", "admin"],
+        default: "user"
     },
     lastLoginAt: {
         type: Date,

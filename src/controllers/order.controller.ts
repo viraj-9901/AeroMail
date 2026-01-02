@@ -11,13 +11,14 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
 export const updateOrder = asyncHandler(async (req: Request, res: Response) => {
   const order = await OrderService.updateOrderStatus(
     req.params.id,
-    req.body.status
+    req.body.status,
+    req.authUser.email
   );
 
   res.status(200).json(new ApiResponse(200, order, "Order updated"));
 });
 
 export const cancelOrder = asyncHandler(async (req: Request, res: Response) => {
-  const order = await OrderService.cancelOrder(req.params.id);
+  const order = await OrderService.cancelOrder(req.params.id, req.authUser.email);
   res.status(200).json(new ApiResponse(200, order, "Order cancelled"));
 });

@@ -1,10 +1,14 @@
 import { Router } from "express";
 import * as OrderController from "../controllers/order.controller";
+import { verifyToken } from "../middlewares/auth.middleware";
+import { validateCreateOrder, validateUpdateOrder } from "../validations/order.validation";
 
 const router = Router();
 
-router.post("/", OrderController.createOrder);
-router.patch("/:id", OrderController.updateOrder);
+router.use(verifyToken);
+
+router.post("/", validateCreateOrder, OrderController.createOrder);
+router.patch("/:id", validateUpdateOrder,  OrderController.updateOrder);
 router.delete("/:id", OrderController.cancelOrder);
 
 export default router;

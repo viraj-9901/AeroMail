@@ -26,9 +26,8 @@ export const generateAccessAndRefreshToken = async (
 export const registerUser = async (payload: {
   email: string;
   password: string;
-  organizationName: string;
 }) => {
-  const { email, password, organizationName } = payload;
+  const { email, password } = payload;
 
   if (!email || !password) {
     throw new ApiError(400, "Invalid email or password");
@@ -43,11 +42,36 @@ export const registerUser = async (payload: {
   const authUser = await Auth.create({
     email,
     password,
-    referenceNumber: uuidv4(),
   });
 
   return authUser;
 };
+
+export const registerAdmin = async (payload: {
+  email: string;
+  password: string;
+  secretKey: string;
+}) => {
+  const { email, password, secretKey } = payload;
+
+  if (!email || !password || !secretKey) {
+    throw new ApiError(400, "Invalid email or password");
+  }
+
+  const existingAdmin = await Auth.findOne({ email });
+
+  if (existingAdmin) {
+    throw new ApiError(400, "Admin already exists");
+  }
+
+  const authUser = await Auth.create({
+    email,
+    password,
+    role: "Admin"
+  });
+
+  return authUser;
+}
 
 export const loginUser = async (
   loginIdentifier: string,
